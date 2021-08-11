@@ -35,7 +35,7 @@ static void send_steer_enable_speed(CAN_FIFOMailBox_TypeDef *to_fwd){
   int crc;
   int kph_factor = 128;
   int eps_cutoff_speed;
-  int lkas_enable_speed = 65 * kph_factor;
+  int lkas_enable_speed = 50 * kph_factor;
   int apa_enable_speed = 0 * kph_factor;
   int veh_speed = GET_BYTE(to_fwd, 4) | GET_BYTE(to_fwd, 5) << 8;
   
@@ -191,13 +191,13 @@ int default_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   int addr = GET_ADDR(to_push);
   int bus_num = GET_BUS(to_push);
   
-  if ((addr == 658) && (bus_num == 0)) {
+  if ((addr == 166) && (bus_num == 0)) {
     is_op_active = (GET_BYTE(to_push, 0) >> 4) & 0x1;
     lkas_torq = ((GET_BYTE(to_push, 0) & 0x7) << 8) | GET_BYTE(to_push, 1);
     counter_658 += 1;
   }
 
-  if ((addr == 284) && (bus_num == 0)) {
+  if ((addr == 121) && (bus_num == 0)) {
     if (counter_502 > 0) {
         counter_284_502 += 1;
         if (counter_284_502 - counter_502 > 25) {
@@ -246,11 +246,11 @@ int default_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     acc_torq = (GET_BYTE(to_push, 4) & 0x7F) << 8 | GET_BYTE(to_push, 5);
   }
   
-  if ((addr == 678) && (bus_num == 0)) {
+  if ((addr == 250) && (bus_num == 0)) {
     steer_type = 1; // GET_BYTE(to_push, 6);
   }
 
-  if ((addr == 500) && (bus_num == 1)) {
+  if ((addr == 153) && (bus_num == 1)) {
     if (is_oplong_enabled) {
        org_acc_available = (GET_BYTE(to_push, 2) >> 4) & 0x1;
        org_cmd_type = (GET_BYTE(to_push, 4) >> 4) & 0x7;
